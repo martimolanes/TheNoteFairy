@@ -2,28 +2,36 @@
 This is the core file of our simple note app.
 '''
 import sys
-import menu
+import utils.tui as tui
 
 def main() -> int:
     '''
     Entry point.
     '''
-    args = sys.argv
-    print(args)
+#    args = sys.argv
+#    print(args)
 
     # Welcome message
     print('Welcome to the Simple Note App!')
-    # User autentication
-    print('Please enter your username:')
-    username = input()
-    print('Please enter your password:')
-    password = input()
+
+    username, password = login()
     
     if not check_user(username, password):
         print('Wrong username or password!')
         return 1
-    menu.run()
+
+    tui.run(username)
     return 0
+
+def login():
+    '''
+    Get username and password from user.
+    '''
+    print('Username: ', end='')
+    username = input()
+    print('Password: ', end='')
+    password = input()
+    return username, password
 
 def check_user(username: str, password: str) -> bool:
     '''
