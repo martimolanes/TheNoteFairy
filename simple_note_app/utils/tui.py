@@ -6,6 +6,7 @@ import curses
 ENTER_KEY = 10
 
 def menu(stdscr: curses.window, username: str):
+    curses.curs_set(0)
     # Clear screen
     stdscr.clear()
 
