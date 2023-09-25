@@ -7,6 +7,15 @@ ENTER_KEY = 10
 FINNISH_OPTION = 2
 
 def menu(stdscr: curses.window, username: str):
+    '''
+    Display menu and get user input
+    ## Parameters
+    stdscr: curses.window
+    username: str
+
+    ## Returns
+    None
+    '''
     curses.curs_set(0)
     # Clear screen
     stdscr.clear()
@@ -70,12 +79,44 @@ def menu(stdscr: curses.window, username: str):
     stdscr.clear()
     curses.endwin()
 
+
 def action(subwin: curses.window, option: int):
     if option == 0:
-        subwin.addstr(3, 3, "Create a note")
+        read_display(subwin)
+
     elif option == 1:
         subwin.addstr(3, 3, "Retrieve a note")
     subwin.refresh()
+
+def read_display(subwin: curses.window) -> str:
+    subwin.clear()
+    subwin.border()
+    x, y = 3, 3
+    str_acc = ""
+    while True:
+        char = chr(subwin.getch())
+        if char == '\n':
+            y += 1
+            x = 3
+            continue
+        elif char == '\t':
+            x += 4
+            continue
+        elif ord(char) == 127:
+            x -= 1
+            str_acc = str_acc[:-1]
+            subwin.addstr(y, x, ' ')
+            subwin.refresh()
+            continue
+        elif char == '+':
+            break
+        
+        subwin.addstr(y, x, char)
+        x += 1
+        subwin.refresh()
+        str_acc += char
+        
+    return str_acc
 
 # Run main function
 def run(username: str):
