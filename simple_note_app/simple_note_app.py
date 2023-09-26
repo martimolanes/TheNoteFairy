@@ -10,21 +10,24 @@ def main() -> int:
     '''
     # Welcome message
     print('Welcome to the Simple Note App!')
+    while True:
+        try:
+            username, password = login()
+            if not check_user(username, password):
+                print('Wrong username or password!')
+                return 1
 
-    username, password = login()
-    
-    if not check_user(username, password):
-        print('Wrong username or password!')
-        return 1
-
-    tui.run(username)
+            tui.run(username)
+        except KeyboardInterrupt:
+            print('\nGoodbye!')
+            break
     return 0
 
 def login():
     '''
     Get username and password from user.
     '''
-    print('Username: ', end='')
+    print('\nUsername: ', end='')
     username = input()
     print('Password: ', end='')
     password = input()
