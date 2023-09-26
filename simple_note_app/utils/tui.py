@@ -110,7 +110,12 @@ def display_notes(subwin: curses.window, notes: list):
             subwin.border()
             n = (n + 1) % len(notes)
             subwin.addstr(3, 3, notes[n]["content"])
-
+        elif char == 'd':
+            data.delete_notes(notes[n]["date"])
+            subwin.clear()
+            subwin.border()
+            subwin.addstr(3, 3, "Deleted")
+            break
 
 def read_display(subwin: curses.window) -> str:
     subwin.clear()

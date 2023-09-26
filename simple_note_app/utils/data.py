@@ -29,3 +29,12 @@ def retrieve_notes(username: str) -> List[Dict[str, str]]:
     '''
     return [note for note in notes if note["username"] == username]
 
+def delete_notes(date: str):
+    '''
+    Delete notes from database
+    ## Parameters
+    username
+    '''
+    global notes
+    notes = [note for note in notes if note["date"] != date]
+
