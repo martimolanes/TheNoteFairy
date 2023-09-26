@@ -32,24 +32,18 @@ def menu(stdscr: curses.window, username: str):
     subwin_y = curses.LINES - subwin_height
     subwin_x = curses.COLS // 2 - subwin_width // 2
     subwin: curses.window = stdscr.subwin(subwin_height, subwin_width, subwin_y, subwin_x)
-    subwin.border()
-    # Refresh the subwindow to show its content
-    
-    subwin.refresh()
+    _border(subwin)
 
     # Set colors
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLUE)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
-    # Set outline
-    #stdscr.border()
     stdscr.refresh()
 
     # Set options
     options = [" Create a note ", " Retrieve a note ", " Log out "]
     current_option = 0
 
-    # Loop until user presses Enter
     while True:
         # Print options
         for i, option in enumerate(options):
@@ -80,6 +74,25 @@ def menu(stdscr: curses.window, username: str):
     stdscr.clear()
     curses.endwin()
 
+def _border(subwin):
+    subwin_height = curses.LINES * 3 // 4
+    subwin_width = curses.COLS
+    subwin.border()
+    top_left = "╭"
+    top_right = "╮"
+    bottom_left = "╰"
+    bottom_right = "╯"
+
+    subwin.addch(0, 0, top_left)
+    subwin.addch(0, subwin_width-1, top_right)
+    subwin.addch(subwin_height-1, 0, bottom_left)
+    #FIXME: only bottom right corner not WORKING
+    #subwin.addch(subwin_height-1, subwin_width-1, bottom_right)
+
+
+    subwin.addstr(0, int(curses.COLS/2-6), " TheNoteFairy ")
+    # Refresh the subwindow to show its content
+    subwin.refresh()
 
 def action(subwin: curses.window, option: int, username: str):
     if option == 0:
@@ -94,12 +107,12 @@ def action(subwin: curses.window, option: int, username: str):
 def display_notes(subwin: curses.window, notes: list):
     if len(notes) == 0:
         subwin.clear()
-        subwin.border()
+        _border(subwin)
         subwin.addstr(DEFAULT_Y, DEFAULT_X, "No notes found")
         return
     n = 0
     subwin.clear()
-    subwin.border()
+    _border(subwin)
     _diplay_str(subwin, notes[n]["content"])
     while True:
         char = chr(subwin.getch())
@@ -107,18 +120,18 @@ def display_notes(subwin: curses.window, notes: list):
             break
         elif char == 'h':
             subwin.clear()
-            subwin.border()
+            _border(subwin)
             n = (n - 1) % len(notes)
             _diplay_str(subwin, notes[n]["content"])
         elif char == 'l':
             subwin.clear()
-            subwin.border()
+            _border(subwin)
             n = (n + 1) % len(notes)
             _diplay_str(subwin, notes[n]["content"])
         elif char == 'd':
             data.delete_notes(notes[n]["date"])
             subwin.clear()
-            subwin.border()
+            _border(subwin)
             subwin.addstr(DEFAULT_Y, DEFAULT_X, "Deleted")
             break
 
@@ -130,7 +143,7 @@ def _diplay_str(subwin: curses.window, str: str):
 
 def read_display(subwin: curses.window) -> str:
     subwin.clear()
-    subwin.border()
+    _border(subwin)
     x, y = DEFAULT_X, DEFAULT_Y
     str_acc = ""
     while True:
