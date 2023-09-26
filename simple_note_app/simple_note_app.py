@@ -8,9 +8,6 @@ def main() -> int:
     '''
     Entry point.
     '''
-#    args = sys.argv
-#    print(args)
-
     # Welcome message
     print('Welcome to the Simple Note App!')
 

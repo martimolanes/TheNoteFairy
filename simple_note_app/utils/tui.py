@@ -2,6 +2,7 @@
 display menu and get user input
 '''
 import curses
+import utils.data as data
 
 ENTER_KEY = 10
 FINNISH_OPTION = 2
@@ -16,24 +17,18 @@ def menu(stdscr: curses.window, username: str):
     ## Returns
     None
     '''
+    # Hide cursor
     curses.curs_set(0)
     # Clear screen
     stdscr.clear()
     
-    # make subwindow that occups all of the bottom middle of the screen
+    # Create a subwindow
     subwin_height = curses.LINES * 3 // 4
     subwin_width = curses.COLS
     subwin_y = curses.LINES - subwin_height
     subwin_x = curses.COLS // 2 - subwin_width // 2
-
-    # Create a subwindow
     subwin: curses.window = stdscr.subwin(subwin_height, subwin_width, subwin_y, subwin_x)
     subwin.border()
-
-    # Add content to the subwindow
-    subwin.addstr(1, 1, "This is a subwindow")
-    subwin.addstr(3, 1, "Press any key to exit")
-
     # Refresh the subwindow to show its content
     subwin.refresh()
 
@@ -43,6 +38,7 @@ def menu(stdscr: curses.window, username: str):
 
     # Set outline
     stdscr.border()
+    stdscr.refresh()
 
     # Set options
     options = ["1. Create a note", "2. Retrieve a note", "3. Log out"]
@@ -72,7 +68,7 @@ def menu(stdscr: curses.window, username: str):
         elif key == ENTER_KEY:
             if current_option == 2:
                 break
-            action(subwin, current_option)
+            action(subwin, current_option, username)
 
 
     # Clear screen and exit
@@ -80,13 +76,41 @@ def menu(stdscr: curses.window, username: str):
     curses.endwin()
 
 
-def action(subwin: curses.window, option: int):
+def action(subwin: curses.window, option: int, username: str):
     if option == 0:
-        read_display(subwin)
+        note = read_display(subwin)
+        data.save_note(username, note)
 
     elif option == 1:
-        subwin.addstr(3, 3, "Retrieve a note")
+        user_notes = data.retrieve_notes(username)
+        display_notes(subwin, user_notes)
     subwin.refresh()
+
+def display_notes(subwin: curses.window, notes: list):
+    if len(notes) == 0:
+        subwin.clear()
+        subwin.border()
+        subwin.addstr(3, 3, "No notes found")
+        return
+    n = 0
+    subwin.clear()
+    subwin.border()
+    subwin.addstr(3, 3, notes[n]["content"])
+    while True:
+        char = chr(subwin.getch())
+        if char == '+':
+            break
+        elif char == 'h':
+            subwin.clear()
+            subwin.border()
+            n = (n - 1) % len(notes)
+            subwin.addstr(3, 3, notes[n]["content"])
+        elif char == 'l':
+            subwin.clear()
+            subwin.border()
+            n = (n + 1) % len(notes)
+            subwin.addstr(3, 3, notes[n]["content"])
+
 
 def read_display(subwin: curses.window) -> str:
     subwin.clear()
@@ -102,6 +126,8 @@ def read_display(subwin: curses.window) -> str:
         elif char == '\t':
             x += 4
             continue
+        # delete
+        # FIXME: delete not working when there is a tab or newline
         elif ord(char) == 127:
             if x > 3:
                 x -= 1
