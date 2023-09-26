@@ -95,7 +95,7 @@ def display_notes(subwin: curses.window, notes: list):
     n = 0
     subwin.clear()
     subwin.border()
-    subwin.addstr(3, 3, notes[n]["content"])
+    _diplay_str(subwin, notes[n]["content"])
     while True:
         char = chr(subwin.getch())
         if char == '+':
@@ -104,18 +104,24 @@ def display_notes(subwin: curses.window, notes: list):
             subwin.clear()
             subwin.border()
             n = (n - 1) % len(notes)
-            subwin.addstr(3, 3, notes[n]["content"])
+            _diplay_str(subwin, notes[n]["content"])
         elif char == 'l':
             subwin.clear()
             subwin.border()
             n = (n + 1) % len(notes)
-            subwin.addstr(3, 3, notes[n]["content"])
+            _diplay_str(subwin, notes[n]["content"])
         elif char == 'd':
             data.delete_notes(notes[n]["date"])
             subwin.clear()
             subwin.border()
             subwin.addstr(3, 3, "Deleted")
             break
+
+def _diplay_str(subwin: curses.window, str: str):
+    y = 3
+    for i, line in enumerate(str.split('\n')):
+        subwin.addstr(y+i, 3, line)
+        subwin.refresh()
 
 def read_display(subwin: curses.window) -> str:
     subwin.clear()
@@ -127,9 +133,11 @@ def read_display(subwin: curses.window) -> str:
         if char == '\n':
             y += 1
             x = 3
+            str_acc += '\n'
             continue
         elif char == '\t':
             x += 4
+            str_acc += '\t'
             continue
         # delete
         # FIXME: delete not working when there is a tab or newline
