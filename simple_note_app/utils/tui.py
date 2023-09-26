@@ -103,10 +103,11 @@ def read_display(subwin: curses.window) -> str:
             x += 4
             continue
         elif ord(char) == 127:
-            x -= 1
-            str_acc = str_acc[:-1]
-            subwin.addstr(y, x, ' ')
-            subwin.refresh()
+            if x > 3:
+                x -= 1
+                str_acc = str_acc[:-1]
+                subwin.addstr(y, x, ' ')
+                subwin.refresh()
             continue
         elif char == '+':
             break
