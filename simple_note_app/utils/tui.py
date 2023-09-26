@@ -5,7 +5,11 @@ import curses
 import utils.data as data
 
 ENTER_KEY = 10
+DELETE_KEY = 127
 FINNISH_OPTION = 2
+
+DEFAULT_Y = 3
+DEFAULT_X = 5
 
 def menu(stdscr: curses.window, username: str):
     '''
@@ -30,18 +34,19 @@ def menu(stdscr: curses.window, username: str):
     subwin: curses.window = stdscr.subwin(subwin_height, subwin_width, subwin_y, subwin_x)
     subwin.border()
     # Refresh the subwindow to show its content
+    
     subwin.refresh()
 
     # Set colors
-    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
+    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLUE)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
     # Set outline
-    stdscr.border()
+    #stdscr.border()
     stdscr.refresh()
 
     # Set options
-    options = ["1. Create a note", "2. Retrieve a note", "3. Log out"]
+    options = [" Create a note ", " Retrieve a note ", " Log out "]
     current_option = 0
 
     # Loop until user presses Enter
@@ -50,11 +55,11 @@ def menu(stdscr: curses.window, username: str):
         for i, option in enumerate(options):
             if i == current_option:
                 stdscr.attron(curses.color_pair(1))
-                stdscr.addstr(i+1, 2, option)
+                stdscr.addstr(i+3, int(curses.COLS/2)-6, option)
                 stdscr.attroff(curses.color_pair(1))
             else:
                 stdscr.attron(curses.color_pair(2))
-                stdscr.addstr(i+1, 2, option)
+                stdscr.addstr(i+3, int(curses.COLS/2)-6, option)
                 stdscr.attroff(curses.color_pair(2))
 
         # Get user input
@@ -90,7 +95,7 @@ def display_notes(subwin: curses.window, notes: list):
     if len(notes) == 0:
         subwin.clear()
         subwin.border()
-        subwin.addstr(3, 3, "No notes found")
+        subwin.addstr(DEFAULT_Y, DEFAULT_X, "No notes found")
         return
     n = 0
     subwin.clear()
@@ -114,25 +119,25 @@ def display_notes(subwin: curses.window, notes: list):
             data.delete_notes(notes[n]["date"])
             subwin.clear()
             subwin.border()
-            subwin.addstr(3, 3, "Deleted")
+            subwin.addstr(DEFAULT_Y, DEFAULT_X, "Deleted")
             break
 
 def _diplay_str(subwin: curses.window, str: str):
-    y = 3
+    y = DEFAULT_Y
     for i, line in enumerate(str.split('\n')):
-        subwin.addstr(y+i, 3, line)
+        subwin.addstr(y+i, DEFAULT_X, line)
         subwin.refresh()
 
 def read_display(subwin: curses.window) -> str:
     subwin.clear()
     subwin.border()
-    x, y = 3, 3
+    x, y = DEFAULT_X, DEFAULT_Y
     str_acc = ""
     while True:
         char = chr(subwin.getch())
         if char == '\n':
             y += 1
-            x = 3
+            x = DEFAULT_X
             str_acc += '\n'
             continue
         elif char == '\t':
@@ -141,8 +146,8 @@ def read_display(subwin: curses.window) -> str:
             continue
         # delete
         # FIXME: delete not working when there is a tab or newline
-        elif ord(char) == 127:
-            if x > 3:
+        elif ord(char) == DELETE_KEY:
+            if x > DEFAULT_X:
                 x -= 1
                 str_acc = str_acc[:-1]
                 subwin.addstr(y, x, ' ')
