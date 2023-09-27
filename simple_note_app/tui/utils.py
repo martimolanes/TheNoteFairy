@@ -2,7 +2,7 @@ import curses
 import _curses
 from tui.constants import TOP_LEFT_CHAR, TOP_RIGHT_CHAR, BOTTOM_LEFT_CHAR, BOTTOM_RIGHT_CHAR
 
-def refresh_subwindow_border(subwin: curses.window):
+def refresh_subwindow(subwin: curses.window):
     subwin_height = curses.LINES * 3 // 4
     subwin_width = curses.COLS
     subwin.border()
@@ -20,3 +20,20 @@ def refresh_subwindow_border(subwin: curses.window):
     subwin.addstr(0, curses.COLS // 2 - 6, " TheNoteFairy ")
     # Refresh the subwindow to show its content
     subwin.refresh()
+
+def refresh_searchbox(searchbox: curses.window):
+    search_box_height = curses.LINES // 12
+    search_box_width = curses.COLS
+    searchbox.clear()
+    searchbox.border()
+    searchbox.addch(0, 0, TOP_LEFT_CHAR)
+    searchbox.addch(0, search_box_width - 1, TOP_RIGHT_CHAR)
+    searchbox.addch(search_box_height - 1, 0, BOTTOM_LEFT_CHAR)
+    # This is a cotrolled crash
+    # https://stackoverflow.com/questions/36387625/curses-fails-when-calling-addch-on-the-bottom-right-corner
+    try:
+        searchbox.addch(search_box_height-1, search_box_width-1, BOTTOM_RIGHT_CHAR)
+    except _curses.error:
+        pass
+    searchbox.addstr(search_box_height - 1, search_box_width - 9 , " Search ")
+    searchbox.refresh()

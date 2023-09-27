@@ -1,12 +1,12 @@
 import curses
 from typing import Dict
 from tui.constants import *
-from tui.utils import refresh_subwindow_border
+from tui.utils import refresh_subwindow
 import core.data as data
 
 def input_and_display(subwin: curses.window):
     subwin.clear()
-    refresh_subwindow_border(subwin)
+    refresh_subwindow(subwin)
     subject = _read_subject(subwin)
     content = _read_content(subwin)
 
@@ -70,12 +70,12 @@ def _read_content(subwin: curses.window) -> str:
 def display_notes(subwin: curses.window, notes: list):
     if len(notes) == 0:
         subwin.clear()
-        refresh_subwindow_border(subwin)
+        refresh_subwindow(subwin)
         subwin.addstr(DEFAULT_Y, DEFAULT_X, "No notes found")
         return
     n = 0
     subwin.clear()
-    refresh_subwindow_border(subwin)
+    refresh_subwindow(subwin)
     _diplay_note(subwin, notes[n])
     while True:
         char = chr(subwin.getch())
@@ -83,20 +83,23 @@ def display_notes(subwin: curses.window, notes: list):
             break
         elif char == 'h':
             subwin.clear()
-            refresh_subwindow_border(subwin)
+            refresh_subwindow(subwin)
             n = (n - 1) % len(notes)
             _diplay_note(subwin, notes[n])
         elif char == 'l':
             subwin.clear()
-            refresh_subwindow_border(subwin)
+            refresh_subwindow(subwin)
             n = (n + 1) % len(notes)
             _diplay_note(subwin, notes[n])
         elif char == 'd':
             data.delete_notes(notes[n]["date"])
             subwin.clear()
-            refresh_subwindow_border(subwin)
+            refresh_subwindow(subwin)
             subwin.addstr(DEFAULT_Y, DEFAULT_X, "Deleted")
             break
+        elif char == '/':
+            pass
+
 
 def _diplay_note(subwin: curses.window, note: Dict[str, str]):
     subwin.addstr(DEFAULT_Y, DEFAULT_X, "Username: " + note["username"])
