@@ -2,7 +2,7 @@
 This is the core file of our simple note app.
 '''
 import sys
-import utils.tui as tui
+import tui.app as tui
 
 def main() -> int:
     '''
