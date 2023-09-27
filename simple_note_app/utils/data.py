@@ -8,6 +8,7 @@ def save_note(username: str, subject: str, content: str):
     Save note to database
     ## Parameters
     username: str
+    subject: str
     content: str
     '''
     note: Dict[str, str] = {
@@ -23,7 +24,7 @@ def retrieve_notes(username: str) -> List[Dict[str, str]]:
     '''
     Retrieve notes from database
     ## Parameters
-    username
+    username : str
 
     ## Returns
     List of notes
@@ -34,7 +35,7 @@ def delete_notes(date: str):
     '''
     Delete notes from database
     ## Parameters
-    username
+    date : str
     '''
     global notes
     notes = [note for note in notes if note["date"] != date]

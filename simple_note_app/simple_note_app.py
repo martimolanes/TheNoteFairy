@@ -8,8 +8,7 @@ def main() -> int:
     '''
     Entry point.
     '''
-    # Welcome message
-    print('Welcome to the Simple Note App!')
+    print('\nWelcome to the TheNoteFairy!')
     while True:
         try:
             username, password = login()
