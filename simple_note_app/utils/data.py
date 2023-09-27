@@ -3,7 +3,7 @@ from typing import List, Dict
 
 notes = []
 
-def save_note(username: str, content: str):
+def save_note(username: str, subject: str, content: str):
     '''
     Save note to database
     ## Parameters
@@ -12,6 +12,7 @@ def save_note(username: str, content: str):
     '''
     note: Dict[str, str] = {
             'username': username,
+            'subject': subject,
             'content': content,
             'date': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }

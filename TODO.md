@@ -1,0 +1,3 @@
+- [ ] search function (grep, date search)
+- [ ] log box wth details (username, nº notes)
+- [ ] keybinds help

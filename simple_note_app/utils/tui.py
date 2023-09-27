@@ -3,6 +3,7 @@ display menu and get user input
 '''
 import curses
 import utils.data as data
+from typing import Dict
 
 ENTER_KEY = 10
 DELETE_KEY = 127
@@ -96,8 +97,8 @@ def _border(subwin):
 
 def action(subwin: curses.window, option: int, username: str):
     if option == 0:
-        note = read_display(subwin)
-        data.save_note(username, note)
+        subject, content = read_display(subwin)
+        data.save_note(username, subject, content)
 
     elif option == 1:
         user_notes = data.retrieve_notes(username)
@@ -113,7 +114,7 @@ def display_notes(subwin: curses.window, notes: list):
     n = 0
     subwin.clear()
     _border(subwin)
-    _diplay_str(subwin, notes[n]["content"])
+    _diplay_note(subwin, notes[n])
     while True:
         char = chr(subwin.getch())
         if char == '+':
@@ -122,12 +123,12 @@ def display_notes(subwin: curses.window, notes: list):
             subwin.clear()
             _border(subwin)
             n = (n - 1) % len(notes)
-            _diplay_str(subwin, notes[n]["content"])
+            _diplay_note(subwin, notes[n])
         elif char == 'l':
             subwin.clear()
             _border(subwin)
             n = (n + 1) % len(notes)
-            _diplay_str(subwin, notes[n]["content"])
+            _diplay_note(subwin, notes[n])
         elif char == 'd':
             data.delete_notes(notes[n]["date"])
             subwin.clear()
@@ -135,16 +136,49 @@ def display_notes(subwin: curses.window, notes: list):
             subwin.addstr(DEFAULT_Y, DEFAULT_X, "Deleted")
             break
 
-def _diplay_str(subwin: curses.window, str: str):
-    y = DEFAULT_Y
-    for i, line in enumerate(str.split('\n')):
+def _diplay_note(subwin: curses.window, note: Dict[str, str]):
+    subwin.addstr(DEFAULT_Y, DEFAULT_X, "Username: " + note["username"])
+    subwin.addstr(DEFAULT_Y + 1, DEFAULT_X, "Date: " + note["date"])
+    subwin.addstr(DEFAULT_Y + 3, DEFAULT_X, "Subject: " + note["subject"])
+
+    y = DEFAULT_Y * 2 + 4
+    for i, line in enumerate(note["content"].split('\n')):
         subwin.addstr(y+i, DEFAULT_X, line)
         subwin.refresh()
 
-def read_display(subwin: curses.window) -> str:
+def read_display(subwin: curses.window):
     subwin.clear()
     _border(subwin)
-    x, y = DEFAULT_X, DEFAULT_Y
+    subject = _read_subject(subwin)
+    content = _read_content(subwin)
+
+    return subject, content
+
+
+def _read_subject(subwin: curses.window) -> str:
+    subwin.addstr(DEFAULT_Y, DEFAULT_X, "Subject: ")
+    x = DEFAULT_X + len("Subject: ")
+    subwin.refresh()
+    subject = ""
+    while True:
+        char = chr(subwin.getch())
+        if char == '\n':
+            break
+        elif ord(char) == DELETE_KEY:
+            if x > DEFAULT_X + len("Subject: "):
+                x -= 1
+                subject = subject[:-1]
+                subwin.addstr(DEFAULT_Y, x, ' ')
+                subwin.refresh()
+            continue
+        subject += char
+        x += 1
+        subwin.addstr(DEFAULT_Y, DEFAULT_X + len("Subject: "), subject)
+        subwin.refresh()
+    return subject
+
+def _read_content(subwin: curses.window) -> str:
+    x, y = DEFAULT_X, DEFAULT_Y * 2
     str_acc = ""
     while True:
         char = chr(subwin.getch())
