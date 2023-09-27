@@ -1,3 +1,7 @@
-- [ ] search function (grep, date search)
+- [x] search function (grep, date search)
 - [ ] log box wth details (username, nº notes)
 - [ ] keybinds help
+- [ ] network link in note
+- [ ] acounts and passwords in database 
+- [ ] read notes from files
+- [ ] fetch html from web

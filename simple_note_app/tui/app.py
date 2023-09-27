@@ -4,7 +4,7 @@ display menu and get user input
 import curses
 import core.data as data
 from tui.constants import *
-from tui.utils import refresh_subwindow_border
+from tui.utils import refresh_subwindow, refresh_searchbox
 from tui.core import input_and_display, display_notes
 
 def menu(stdscr: curses.window, username: str):
@@ -25,7 +25,15 @@ def menu(stdscr: curses.window, username: str):
     subwin_y = curses.LINES - subwin_height
     subwin_x = curses.COLS // 2 - subwin_width // 2
     subwin: curses.window = stdscr.subwin(subwin_height, subwin_width, subwin_y, subwin_x)
-    refresh_subwindow_border(subwin)
+    refresh_subwindow(subwin)
+
+    # Create a search box on top of the subwindow
+    search_box_height = curses.LINES // 12
+    search_box_width = curses.COLS
+    search_box_y = curses.LINES - search_box_height - subwin_height 
+    search_box_x = curses.COLS // 2 - search_box_width // 2
+    search_box: curses.window = stdscr.subwin(search_box_height, search_box_width, search_box_y, search_box_x)
+    refresh_searchbox(search_box)
 
     # Set colors
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLUE)
@@ -60,19 +68,19 @@ def menu(stdscr: curses.window, username: str):
         elif key == ENTER_KEY:
             if current_option == LOGOUT_OPTION:
                 break
-            subwindow_run(subwin, current_option, username)
+            subwindow_run(subwin, search_box, current_option, username)
 
     # Clear screen and exit
     stdscr.clear()
     curses.endwin()
 
-def subwindow_run(subwin: curses.window, option: int, username: str):
+def subwindow_run(subwin: curses.window, search_box: curses.window,  option: int, username: str):
     if option == CREATE_OPTION:
         subject, content = input_and_display(subwin)
         data.save_note(username, subject, content)
     elif option == RETRIEVE_OPTION:
         user_notes = data.retrieve_notes(username)
-        display_notes(subwin, user_notes)
+        display_notes(subwin, search_box, user_notes)
     subwin.refresh()
 
 # Run main function
