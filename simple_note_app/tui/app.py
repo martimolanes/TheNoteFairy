@@ -69,19 +69,19 @@ def menu(stdscr: curses.window, username: str):
         elif key == ENTER_KEY:
             if current_option == LOGOUT_OPTION:
                 break
-            subwindow_run(subwin, current_option, username)
+            subwindow_run(subwin, search_box, current_option, username)
 
     # Clear screen and exit
     stdscr.clear()
     curses.endwin()
 
-def subwindow_run(subwin: curses.window, option: int, username: str):
+def subwindow_run(subwin: curses.window, search_box: curses.window,  option: int, username: str):
     if option == CREATE_OPTION:
         subject, content = input_and_display(subwin)
         data.save_note(username, subject, content)
     elif option == RETRIEVE_OPTION:
         user_notes = data.retrieve_notes(username)
-        display_notes(subwin, user_notes)
+        display_notes(subwin, search_box, user_notes)
     subwin.refresh()
 
 # Run main function

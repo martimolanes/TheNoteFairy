@@ -1,7 +1,7 @@
 import curses
 from typing import Dict
 from tui.constants import *
-from tui.utils import refresh_subwindow
+from tui.utils import refresh_searchbox, refresh_subwindow
 import core.data as data
 
 def input_and_display(subwin: curses.window):
@@ -67,7 +67,30 @@ def _read_content(subwin: curses.window) -> str:
         
     return str_acc
 
-def display_notes(subwin: curses.window, notes: list):
+def _read_search(search_box: curses.window) -> str:
+    x = 1 
+    refresh_searchbox(search_box)
+    search_box.addstr(1, x, ' >  ')
+    x += 4
+    search_str = ""
+    while True:
+        char = chr(search_box.getch())
+        if char == '\n':
+            break
+        elif ord(char) == DELETE_KEY:
+            if x > 5:
+                x -= 1
+                search_str = search_str[:-1]
+                search_box.addstr(1, x, ' ')
+                search_box.refresh()
+            continue
+        search_str += char
+        search_box.addstr(1, x, char)
+        x += 1
+        search_box.refresh()
+    return search_str
+
+def display_notes(subwin: curses.window, search_box, notes: list):
     if len(notes) == 0:
         subwin.clear()
         refresh_subwindow(subwin)
@@ -98,7 +121,7 @@ def display_notes(subwin: curses.window, notes: list):
             subwin.addstr(DEFAULT_Y, DEFAULT_X, "Deleted")
             break
         elif char == '/':
-            pass
+            search_str = _read_search(search_box)
 
 
 def _diplay_note(subwin: curses.window, note: Dict[str, str]):
