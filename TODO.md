@@ -5,3 +5,4 @@
 - [ ] acounts and passwords in database 
 - [ ] read notes from files
 - [ ] fetch html from web
+- [x] commit today
