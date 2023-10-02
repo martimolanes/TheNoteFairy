@@ -1,7 +1,7 @@
 import datetime
+import json
+import uuid
 from typing import List, Dict
-
-notes = []
 
 def save_note(username: str, subject: str, content: str) -> None:
     '''
@@ -12,15 +12,19 @@ def save_note(username: str, subject: str, content: str) -> None:
     content: str
     '''
     note: Dict[str, str] = {
+            'id': str(uuid.uuid4()),
             'username': username,
             'subject': subject,
             'content': content,
             'date': datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
             }
 
+    notes = _retrieve_all_notes()
     notes.append(note)
+    with open('notes.json', 'w') as f:
+        json.dump(notes, f)
 
-def retrieve_notes(username: str) -> List[Dict[str, str]]:
+def retrieve_user_notes(username: str) -> List[Dict[str, str]]:
     '''
     Retrieve notes from database
     ## Parameters
@@ -29,21 +33,25 @@ def retrieve_notes(username: str) -> List[Dict[str, str]]:
     ## Returns
     List of notes
     '''
+    notes = _retrieve_all_notes()
     return [note for note in notes if note["username"] == username]
 
-def delete_notes(date: str) -> None:
+def delete_note(note_id: str) -> None:
     '''
-    Delete notes from database
+    Delete note from database
     ## Parameters
     date : str
     '''
-    global notes
-    notes = [note for note in notes if note["date"] != date]
+    notes = _retrieve_all_notes()
+    notes = [note for note in notes if note["id"] != note_id]
+    with open('notes.json', 'w') as f:
+        json.dump(notes, f)
 
-def search_notes(search_str: str) -> List[Dict[str, str]]:
+def search_notes(notes: List[Dict[str,str]], search_str: str) -> List[Dict[str, str]]:
     '''
-    Search notes from database
+    Search notes 
     ## Parameters
+    notes : List[Dict[str, str]]
     search_str : str
 
     ## Returns
@@ -52,4 +60,18 @@ def search_notes(search_str: str) -> List[Dict[str, str]]:
     if search_str[0].isdigit():
         return [note for note in notes if search_str in note["date"]]
     return [note for note in notes if search_str in note["content"]]
+
+def _retrieve_all_notes() -> List[Dict[str, str]]:
+    '''
+    Retrieve notes from database
+    ## Returns
+    List of notes
+    '''
+    try:
+        with open('notes.json', 'r') as f:
+            notes: List[Dict[str,str]] = json.load(f)
+    except FileNotFoundError:
+        return []
+    return notes
+
 

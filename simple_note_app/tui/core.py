@@ -115,14 +115,19 @@ def display_notes(subwin: curses.window, search_box, notes: list):
             n = (n + 1) % len(notes)
             _diplay_note(subwin, notes[n])
         elif char == 'd':
-            data.delete_notes(notes[n]["date"])
+            data.delete_note(notes[n]["id"])
             subwin.clear()
             refresh_subwindow(subwin)
             subwin.addstr(DEFAULT_Y, DEFAULT_X, "Deleted")
             break
         elif char == '/':
             search_str = _read_search(search_box)
-            notes = data.search_notes(search_str)
+            notes = data.search_notes(notes, search_str)
+            if len(notes) == 0:
+                subwin.clear()
+                refresh_subwindow(subwin)
+                subwin.addstr(DEFAULT_Y, DEFAULT_X, "No notes found containing: " + search_str)
+                break
             subwin.clear()
             refresh_subwindow(subwin)
             n = 0

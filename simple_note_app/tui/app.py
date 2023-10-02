@@ -79,7 +79,7 @@ def subwindow_run(subwin: curses.window, search_box: curses.window,  option: int
         subject, content = input_and_display(subwin)
         data.save_note(username, subject, content)
     elif option == RETRIEVE_OPTION:
-        user_notes = data.retrieve_notes(username)
+        user_notes = data.retrieve_user_notes(username)
         display_notes(subwin, search_box, user_notes)
     subwin.refresh()
 
