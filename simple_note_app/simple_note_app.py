@@ -29,8 +29,7 @@ def login_info():
     '''
     print('\nUsername: ', end='')
     username = input()
-    print('Password: ', end='')
-    password = getpass.getpass()
+    password = getpass.getpass('Password: ')
     return username, password
 
 if __name__ == '__main__':
