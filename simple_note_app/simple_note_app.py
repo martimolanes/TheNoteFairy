@@ -29,8 +29,7 @@ def login():
     '''
     print('\nUsername: ', end='')
     username = input()
-    print('Password: ', end='')
-    password = getpass.getpass()
+    password = getpass.getpass('Password: ')
     return username, password
 
 def check_user(username: str, password: str) -> bool:
