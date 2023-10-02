@@ -2,6 +2,7 @@
 This is the core file of our simple note app.
 '''
 import sys
+import getpass
 import tui.app as tui
 
 def main() -> int:
@@ -29,7 +30,7 @@ def login():
     print('\nUsername: ', end='')
     username = input()
     print('Password: ', end='')
-    password = input()
+    password = getpass.getpass()
     return username, password
 
 def check_user(username: str, password: str) -> bool:
