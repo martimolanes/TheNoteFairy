@@ -16,3 +16,7 @@ A TUI(text/terminal user interface) from scratch using [curses](https://docs.pyt
 - To delete a note you need to be in retrieve notes and press 'd' in the desired note
 
 DEFAULT USERNAME, PASSWD: admin admin
+
+## KNOWN PROBLEMS
+- application may NOT function well with some sizes of screen terminal -> recommended to launch it fullscreen
+- when deleting in the content of a note that have \n, you cannot delete more than the line you are writing
