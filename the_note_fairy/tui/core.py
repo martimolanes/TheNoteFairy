@@ -3,6 +3,7 @@ from typing import Dict
 from tui.constants import *
 from tui.utils import refresh_searchbox, refresh_subwindow
 import core.data as data
+import core.web as web
 
 def input_and_display(subwin: curses.window):
     subwin.clear()
@@ -143,3 +144,8 @@ def _diplay_note(subwin: curses.window, note: Dict[str, str]):
     for i, line in enumerate(note["content"].split('\n')):
         subwin.addstr(y+i, DEFAULT_X, line)
         subwin.refresh()
+
+    
+    title = web.get_title(note["www"])   
+    if title:
+        subwin.addstr(y + 3 + len(note["content"].split('\n')), DEFAULT_X, "fetch-title: " + title)

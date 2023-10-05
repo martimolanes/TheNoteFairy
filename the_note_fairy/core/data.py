@@ -16,7 +16,8 @@ def save_note(username: str, subject: str, content: str) -> None:
             'username': username,
             'subject': subject,
             'content': content,
-            'date': datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+            'date': datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+            'www': 'https://www.google.com'
             }
 
     notes = _retrieve_all_notes()
