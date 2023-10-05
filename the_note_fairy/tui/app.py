@@ -29,6 +29,8 @@ def menu(stdscr: curses.window, username: str):
 
     # Create a search box on top of the subwindow
     search_box_height = curses.LINES // 12
+    if search_box_height < 3:
+        search_box_height = 3
     search_box_width = curses.COLS
     search_box_y = curses.LINES - search_box_height - subwin_height 
     search_box_x = curses.COLS // 2 - search_box_width // 2
@@ -47,14 +49,17 @@ def menu(stdscr: curses.window, username: str):
 
     while True:
         # Print options
+        option_y = (search_box_y - 3) // 2
+        if option_y < 0:
+            option_y = 0
         for i, option in enumerate(options):
             if i == current_option:
                 stdscr.attron(curses.color_pair(1))
-                stdscr.addstr(i+3, int(curses.COLS/2)-6, option)
+                stdscr.addstr(i+option_y, int(curses.COLS/2)-6, option)
                 stdscr.attroff(curses.color_pair(1))
             else:
                 stdscr.attron(curses.color_pair(2))
-                stdscr.addstr(i+3, int(curses.COLS/2)-6, option)
+                stdscr.addstr(i+option_y, int(curses.COLS/2)-6, option)
                 stdscr.attroff(curses.color_pair(2))
 
         # Get user input

@@ -23,6 +23,8 @@ def refresh_subwindow(subwin: curses.window):
 
 def refresh_searchbox(searchbox: curses.window):
     search_box_height = curses.LINES // 12
+    if search_box_height < 3:
+        search_box_height = 3
     search_box_width = curses.COLS
     searchbox.clear()
     searchbox.border()
