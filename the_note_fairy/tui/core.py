@@ -75,8 +75,12 @@ def _read_search(search_box: curses.window) -> str:
     x += 4
     search_str = ""
     while True:
-        char = chr(search_box.getch())
+        key = search_box.getch()
+        char = chr(key)
         if char == '\n':
+            break
+        elif key == ESCAPE_KEY:
+            search_str = ""
             break
         elif ord(char) == DELETE_KEY:
             if x > 5:
@@ -91,7 +95,7 @@ def _read_search(search_box: curses.window) -> str:
         search_box.refresh()
     return search_str
 
-def display_notes(subwin: curses.window, search_box, notes: list):
+def display_notes(subwin: curses.window, search_box: curses.window, keybinding_box: curses.window, notes: list):
     if len(notes) == 0:
         subwin.clear()
         refresh_subwindow(subwin)
@@ -102,15 +106,19 @@ def display_notes(subwin: curses.window, search_box, notes: list):
     refresh_subwindow(subwin)
     _diplay_note(subwin, notes[n])
     while True:
-        char = chr(subwin.getch())
-        if char == '+':
+        keybinding_box.clear()
+        keybinding_box.addstr(1, 1, "Press ←/→ to navigate between notes (or h/l) , / to search, d to delete, q to quit")
+        keybinding_box.refresh()
+        key = subwin.getch()
+        char = chr(key)
+        if char == 'q':
             break
-        elif char == 'h':
+        elif char == 'h' or key == curses.KEY_LEFT:
             subwin.clear()
             refresh_subwindow(subwin)
             n = (n - 1) % len(notes)
             _diplay_note(subwin, notes[n])
-        elif char == 'l':
+        elif char == 'l' or key == curses.KEY_RIGHT:
             subwin.clear()
             refresh_subwindow(subwin)
             n = (n + 1) % len(notes)
@@ -122,7 +130,14 @@ def display_notes(subwin: curses.window, search_box, notes: list):
             subwin.addstr(DEFAULT_Y, DEFAULT_X, "Deleted")
             break
         elif char == '/':
+            keybinding_box.clear()
+            keybinding_box.addstr(1, 1, "Search, press ESC to cancel, ENTER to search")
+            keybinding_box.refresh()
             search_str = _read_search(search_box)
+            if search_str == "":
+                search_box.clear()
+                refresh_searchbox(search_box)
+                continue
             notes = data.search_notes(notes, search_str)
             if len(notes) == 0:
                 subwin.clear()
