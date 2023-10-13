@@ -38,10 +38,12 @@ def _read_subject(subwin: curses.window) -> str:
 def _read_content(subwin: curses.window) -> str:
     x, y = DEFAULT_X, DEFAULT_Y * 2
     str_acc = ""
+    new_line_pos_x = []
     while True:
         char = chr(subwin.getch())
         if char == '\n':
             y += 1
+            new_line_pos_x.append(x)
             x = DEFAULT_X
             str_acc += '\n'
             continue
@@ -50,11 +52,22 @@ def _read_content(subwin: curses.window) -> str:
             str_acc += '\t'
             continue
         # delete
-        # FIXME: delete not working when there is a tab or newline
         elif ord(char) == DELETE_KEY:
             if x > DEFAULT_X:
                 x -= 1
                 str_acc = str_acc[:-1]
+                subwin.addstr(y, x, ' ')
+                subwin.refresh()
+            else:
+                if new_line_pos_x == []:
+                    continue
+                y -= 1
+                x = new_line_pos_x.pop()
+                if x == DEFAULT_X:
+                    str_acc = str_acc[:-1]
+                else:
+                    str_acc = str_acc[:-2]
+                    x -= 1
                 subwin.addstr(y, x, ' ')
                 subwin.refresh()
             continue

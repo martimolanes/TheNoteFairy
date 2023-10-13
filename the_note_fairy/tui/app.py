@@ -47,9 +47,6 @@ def menu(stdscr: curses.window, username: str):
     search_box: curses.window = stdscr.subwin(search_box_height, search_box_width, search_box_y, search_box_x)
     refresh_searchbox(search_box)
 
-
-
-
     # Set colors
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLUE)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
