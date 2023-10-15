@@ -39,3 +39,6 @@ def refresh_searchbox(searchbox: curses.window):
         pass
     searchbox.addstr(search_box_height - 1, search_box_width - 9 , " Search ")
     searchbox.refresh()
+
+def refresh_keybinding_box(keybinding_box: curses.window):
+    keybinding_box.refresh()
