@@ -5,5 +5,5 @@ main
 - [x] fetch html from web
 - [x] acounts and passwords in database 
 next
-- [ ] keybinds help
+- [x] keybinds help
 - [ ] log box wth details (username, nº notes)

@@ -1,3 +1,6 @@
+'''
+User management functions
+'''
 import sqlite3
 import bcrypt
 

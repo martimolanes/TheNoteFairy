@@ -1,3 +1,6 @@
+'''
+Functions for saving, retrieving and deleting notes from json file.
+'''
 import datetime
 import json
 import uuid

@@ -1,5 +1,5 @@
 '''
-display menu and get user input
+Display menu and get user input
 '''
 import curses
 import core.data as data
@@ -18,32 +18,32 @@ def menu(stdscr: curses.window, username: str):
     curses.curs_set(0)
     # Clear screen
     stdscr.clear()
-    
+
+    # Default window size
+    SCREEN_WIDTH = curses.COLS
+    SCREEN_HEIGHT = curses.LINES
+
     # Create a keybinding box on the bottom of the subwindow
-    keybinding_box_height = curses.LINES // 10
-    if keybinding_box_height < 3:
-        keybinding_box_height = 3
-    keybinding_box_width = curses.COLS
-    keybinding_box_y = curses.LINES - keybinding_box_height
-    keybinding_box_x = curses.COLS // 2 - keybinding_box_width // 2
+    keybinding_box_height = max(SCREEN_HEIGHT // 10, 3)
+    keybinding_box_width = SCREEN_WIDTH
+    keybinding_box_y = SCREEN_HEIGHT - keybinding_box_height
+    keybinding_box_x = SCREEN_WIDTH // 2 - keybinding_box_width // 2
     keybinding_box: curses.window = stdscr.subwin(keybinding_box_height, keybinding_box_width, keybinding_box_y, keybinding_box_x)
     keybinding_box.refresh()
 
     # Create a subwindow
-    subwin_height = curses.LINES * 3 // 4
-    subwin_width = curses.COLS
-    subwin_y = curses.LINES - subwin_height - keybinding_box_height
-    subwin_x = curses.COLS // 2 - subwin_width // 2
+    subwin_height = SCREEN_HEIGHT * 3 // 4
+    subwin_width = SCREEN_WIDTH
+    subwin_y = SCREEN_HEIGHT - subwin_height - keybinding_box_height
+    subwin_x = SCREEN_WIDTH // 2 - subwin_width // 2
     subwin: curses.window = stdscr.subwin(subwin_height, subwin_width, subwin_y, subwin_x)
     refresh_subwindow(subwin)
 
     # Create a search box on top of the subwindow
-    search_box_height = curses.LINES // 12
-    if search_box_height < 3:
-        search_box_height = 3
-    search_box_width = curses.COLS
-    search_box_y = curses.LINES - search_box_height - subwin_height - keybinding_box_height
-    search_box_x = curses.COLS // 2 - search_box_width // 2
+    search_box_height = 3
+    search_box_width = SCREEN_WIDTH
+    search_box_y = SCREEN_HEIGHT - search_box_height - subwin_height - keybinding_box_height
+    search_box_x = SCREEN_WIDTH // 2 - search_box_width // 2
     search_box: curses.window = stdscr.subwin(search_box_height, search_box_width, search_box_y, search_box_x)
     refresh_searchbox(search_box)
 

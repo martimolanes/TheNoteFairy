@@ -1,4 +1,6 @@
-# request a url and return the html content (title only)
+'''
+Web scraping functions
+'''
 import requests
 from bs4 import BeautifulSoup
 
