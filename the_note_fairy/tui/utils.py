@@ -3,7 +3,9 @@ import _curses
 from tui.constants import TOP_LEFT_CHAR, TOP_RIGHT_CHAR, BOTTOM_LEFT_CHAR, BOTTOM_RIGHT_CHAR
 
 def refresh_subwindow(subwin: curses.window):
-    subwin_height = curses.LINES * 3 // 4
+    SCREEN_HEIGHT = curses.LINES
+    subwin_height = SCREEN_HEIGHT * 3 // 4
+    subwin_height = SCREEN_HEIGHT - 9 if subwin_height > SCREEN_HEIGHT - 9 else subwin_height
     subwin_width = curses.COLS
     subwin.border()
 
@@ -23,8 +25,6 @@ def refresh_subwindow(subwin: curses.window):
 
 def refresh_searchbox(searchbox: curses.window):
     search_box_height = 3
-    if search_box_height < 3:
-        search_box_height = 3
     search_box_width = curses.COLS
     searchbox.clear()
     searchbox.border()

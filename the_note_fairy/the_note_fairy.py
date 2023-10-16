@@ -4,7 +4,7 @@ This is the core file of our simple note app.
 import sys
 import getpass
 import tui.app as tui
-import core.user as user
+from core import user
 
 def main() -> int:
     '''
@@ -34,6 +34,3 @@ def login_info():
 
 if __name__ == '__main__':
     sys.exit(main())
-
-
-
