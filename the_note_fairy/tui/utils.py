@@ -6,6 +6,9 @@ def refresh_subwindow(subwin: curses.window):
     SCREEN_HEIGHT = curses.LINES
     subwin_height = SCREEN_HEIGHT - 9
     subwin_width = curses.COLS
+    # move the subwindow to the correct position
+    subwin.mvwin(6, 0)
+    subwin.resize(subwin_height, subwin_width)
     subwin.border()
 
     subwin.addch(0, 0, TOP_LEFT_CHAR)
@@ -25,6 +28,8 @@ def refresh_subwindow(subwin: curses.window):
 def refresh_searchbox(searchbox: curses.window):
     search_box_height = 3
     search_box_width = curses.COLS
+    # move the search box to the correct position
+    searchbox.mvwin(3, 0)
     searchbox.clear()
     searchbox.border()
     searchbox.addch(0, 0, TOP_LEFT_CHAR)
@@ -40,4 +45,9 @@ def refresh_searchbox(searchbox: curses.window):
     searchbox.refresh()
 
 def refresh_keybinding_box(keybinding_box: curses.window):
+    keybinding_box_height = 3
+    keybinding_box_width = curses.COLS
+    # move the keybinding box to the correct position
+    keybinding_box.mvwin(curses.LINES - keybinding_box_height, 0)
+    # keybinding_box.resize(keybinding_box_height, keybinding_box_width)
     keybinding_box.refresh()

@@ -1,7 +1,7 @@
 import curses
 from typing import Dict
 from tui.constants import *
-from tui.utils import refresh_searchbox, refresh_subwindow
+from tui.utils import refresh_searchbox, refresh_subwindow, refresh_keybinding_box
 import core.data as data
 import core.web as web
 
@@ -145,7 +145,7 @@ def display_notes(subwin: curses.window, search_box: curses.window, keybinding_b
         elif char == '/':
             keybinding_box.clear()
             keybinding_box.addstr(1, 1, "Search, press ESC to cancel, ENTER to search")
-            keybinding_box.refresh()
+            refresh_keybinding_box(keybinding_box)
             search_str = _read_search(search_box)
             if search_str == "":
                 search_box.clear()

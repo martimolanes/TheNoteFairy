@@ -33,9 +33,19 @@ def menu(stdscr: curses.window, username: str):
     current_option = 0
 
     while True:
+        if curses.is_term_resized(curses.LINES, curses.COLS):
+            y, x = stdscr.getmaxyx()
+            stdscr.clear()
+            curses.resizeterm(y, x)
+            refresh_searchbox(search_box)
+            refresh_keybinding_box(keybinding_box)
+            refresh_subwindow(subwin)
+            stdscr.refresh()
+
         keybinding_box.clear()
-        keybinding_box.addstr(1, 1, "Press ↑/↓ to move (or j/k), ENTER to select")
-        keybinding_box.refresh()
+        keybinding_box.addstr(0, 2, "Press ↑/↓ to move (or j/k), ENTER to select")
+        refresh_keybinding_box(keybinding_box)
+
         # Print options
         option_y = 0
         for i, option in enumerate(options):
