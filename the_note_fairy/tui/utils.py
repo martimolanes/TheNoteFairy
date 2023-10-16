@@ -4,8 +4,7 @@ from tui.constants import TOP_LEFT_CHAR, TOP_RIGHT_CHAR, BOTTOM_LEFT_CHAR, BOTTO
 
 def refresh_subwindow(subwin: curses.window):
     SCREEN_HEIGHT = curses.LINES
-    subwin_height = SCREEN_HEIGHT * 3 // 4
-    subwin_height = SCREEN_HEIGHT - 9 if subwin_height > SCREEN_HEIGHT - 9 else subwin_height
+    subwin_height = SCREEN_HEIGHT - 9
     subwin_width = curses.COLS
     subwin.border()
 

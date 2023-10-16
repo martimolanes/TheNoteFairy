@@ -106,8 +106,7 @@ def init_windows(stdscr: curses.window):
             )
 
     # Create a subwindow for displaying notes
-    subwin_height = SCREEN_HEIGHT * 3 // 4
-    subwin_height = SCREEN_HEIGHT - 9 if subwin_height > SCREEN_HEIGHT - 9 else subwin_height
+    subwin_height = SCREEN_HEIGHT - 10
     subwin_width = SCREEN_WIDTH
     subwin_y_offset = search_box_height + search_box_y_offset
     subwin: curses.window = create_subwindow(
@@ -115,9 +114,9 @@ def init_windows(stdscr: curses.window):
             )
 
     # Create a keybinding box on the bottom of the subwindow
-    keybinding_box_height = max(SCREEN_HEIGHT // 10, 3)
+    keybinding_box_height = 3
     keybinding_box_width = SCREEN_WIDTH
-    keybinding_box_y_offset = subwin_height + subwin_y_offset
+    keybinding_box_y_offset = SCREEN_HEIGHT - keybinding_box_height
     keybinding_box: curses.window = create_subwindow(
             stdscr, keybinding_box_height, keybinding_box_width, keybinding_box_y_offset, refresh_keybinding_box
             )
