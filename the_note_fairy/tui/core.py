@@ -16,7 +16,7 @@ def input_and_display(subwin: curses.window):
 def _read_subject(subwin: curses.window) -> str:
     subwin.addstr(DEFAULT_Y, DEFAULT_X, "Subject: ")
     x = DEFAULT_X + len("Subject: ")
-    subwin.refresh()
+    refresh_subwindow(subwin)
     subject = ""
     while True:
         char = chr(subwin.getch())
@@ -27,12 +27,12 @@ def _read_subject(subwin: curses.window) -> str:
                 x -= 1
                 subject = subject[:-1]
                 subwin.addstr(DEFAULT_Y, x, ' ')
-                subwin.refresh()
+                refresh_subwindow(subwin)
             continue
         subject += char
         x += 1
         subwin.addstr(DEFAULT_Y, DEFAULT_X + len("Subject: "), subject)
-        subwin.refresh()
+        refresh_subwindow(subwin)
     return subject
 
 def _read_content(subwin: curses.window) -> str:
@@ -57,7 +57,7 @@ def _read_content(subwin: curses.window) -> str:
                 x -= 1
                 str_acc = str_acc[:-1]
                 subwin.addstr(y, x, ' ')
-                subwin.refresh()
+                refresh_subwindow(subwin)
             else:
                 if new_line_pos_x == []:
                     continue
@@ -69,14 +69,14 @@ def _read_content(subwin: curses.window) -> str:
                     str_acc = str_acc[:-2]
                     x -= 1
                 subwin.addstr(y, x, ' ')
-                subwin.refresh()
+                refresh_subwindow(subwin)
             continue
         elif char == '+':
             break
         
         subwin.addstr(y, x, char)
         x += 1
-        subwin.refresh()
+        refresh_subwindow(subwin)
         str_acc += char
         
     return str_acc
@@ -100,12 +100,12 @@ def _read_search(search_box: curses.window) -> str:
                 x -= 1
                 search_str = search_str[:-1]
                 search_box.addstr(1, x, ' ')
-                search_box.refresh()
+                refresh_searchbox(search_box)
             continue
         search_str += char
         search_box.addstr(1, x, char)
         x += 1
-        search_box.refresh()
+        refresh_searchbox(search_box)
     return search_str
 
 def display_notes(subwin: curses.window, search_box: curses.window, keybinding_box: curses.window, notes: list):
@@ -120,8 +120,8 @@ def display_notes(subwin: curses.window, search_box: curses.window, keybinding_b
     _diplay_note(subwin, notes[n])
     while True:
         keybinding_box.clear()
-        keybinding_box.addstr(1, 1, "Press ←/→ to navigate between notes (or h/l) , / to search, d to delete, q to quit")
-        keybinding_box.refresh()
+        keybinding_box.addstr(0, 2, "Press ←/→ to navigate between notes (or h/l) , / to search, d to delete, q to quit")
+        refresh_keybinding_box(keybinding_box)
         key = subwin.getch()
         char = chr(key)
         if char == 'q':
@@ -143,8 +143,9 @@ def display_notes(subwin: curses.window, search_box: curses.window, keybinding_b
             subwin.addstr(DEFAULT_Y, DEFAULT_X, "Deleted")
             break
         elif char == '/':
+            search_box.clear()
             keybinding_box.clear()
-            keybinding_box.addstr(1, 1, "Search, press ESC to cancel, ENTER to search")
+            keybinding_box.addstr(0, 2, "Search, press ESC to cancel, ENTER to search")
             refresh_keybinding_box(keybinding_box)
             search_str = _read_search(search_box)
             if search_str == "":
@@ -171,8 +172,7 @@ def _diplay_note(subwin: curses.window, note: Dict[str, str]):
     y = DEFAULT_Y * 2 + 4
     for i, line in enumerate(note["content"].split('\n')):
         subwin.addstr(y+i, DEFAULT_X, line)
-        subwin.refresh()
-
+        refresh_subwindow(subwin)
     
     title = web.get_title(note["www"])   
     if title:

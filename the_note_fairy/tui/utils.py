@@ -30,7 +30,6 @@ def refresh_searchbox(searchbox: curses.window):
     search_box_width = curses.COLS
     # move the search box to the correct position
     searchbox.mvwin(3, 0)
-    searchbox.clear()
     searchbox.border()
     searchbox.addch(0, 0, TOP_LEFT_CHAR)
     searchbox.addch(0, search_box_width - 1, TOP_RIGHT_CHAR)
@@ -49,5 +48,5 @@ def refresh_keybinding_box(keybinding_box: curses.window):
     keybinding_box_width = curses.COLS
     # move the keybinding box to the correct position
     keybinding_box.mvwin(curses.LINES - keybinding_box_height, 0)
-    # keybinding_box.resize(keybinding_box_height, keybinding_box_width)
+    #FIX: keybinding_box.resize(keybinding_box_height, keybinding_box_width)
     keybinding_box.refresh()

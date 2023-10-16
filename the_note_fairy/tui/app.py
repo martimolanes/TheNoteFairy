@@ -82,14 +82,14 @@ def subwindow_run(
         ):
     if option == CREATE_OPTION:
         keybinding_box.clear()
-        keybinding_box.addstr(1, 1, "Press ENTER to save subject, + to save the note")
-        keybinding_box.refresh()
+        keybinding_box.addstr(0, 2, "Press ENTER to save subject, + to save the note")
+        refresh_keybinding_box(keybinding_box)
         subject, content = input_and_display(subwin)
         data.save_note(username, subject, content)
     elif option == RETRIEVE_OPTION:
         user_notes = data.retrieve_user_notes(username)
         display_notes(subwin, search_box, keybinding_box, user_notes)
-    subwin.refresh()
+    refresh_subwindow(subwin)
 
 def init_windows(stdscr: curses.window):
     # Default window size
