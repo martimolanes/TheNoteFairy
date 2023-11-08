@@ -1,7 +1,7 @@
 import curses
 from typing import Dict
 from tui.constants import *
-from tui.utils import refresh_searchbox, refresh_subwindow, refresh_keybinding_box
+from tui.utils import refresh_searchbox, refresh_subwindow, refresh_keybinding_box, update_term_size
 import core.data as data
 import core.web as web
 from tui.windows import Windows
@@ -20,6 +20,8 @@ def _read_subject(windows: Windows) -> str:
     refresh_subwindow(windows.subwin)
     subject = ""
     while True:
+        if curses.is_term_resized(curses.LINES, curses.COLS):
+            update_term_size(windows)
         char = chr(windows.subwin.getch())
         if char == '\n':
             break
@@ -41,6 +43,8 @@ def _read_content(windows: Windows) -> str:
     str_acc = ""
     new_line_pos_x = []
     while True:
+        if curses.is_term_resized(curses.LINES, curses.COLS):
+            update_term_size(windows)
         char = chr(windows.subwin.getch())
         if char == '\n':
             y += 1
@@ -89,6 +93,8 @@ def _read_search(windows: Windows) -> str:
     x += 4
     search_str = ""
     while True:
+        if curses.is_term_resized(curses.LINES, curses.COLS):
+            update_term_size(windows)
         key = windows.search_box.getch()
         char = chr(key)
         if char == '\n':
@@ -120,6 +126,8 @@ def display_notes(windows: Windows, notes: list):
     refresh_subwindow(windows.subwin)
     _diplay_note(windows.subwin, notes[n])
     while True:
+        if curses.is_term_resized(curses.LINES, curses.COLS):
+            update_term_size(windows)
         windows.keybinding_box.clear()
         windows.keybinding_box.addstr(0, 2, "Press ←/→ to navigate between notes (or h/l) , / to search, d to delete, q to quit")
         refresh_keybinding_box(windows.keybinding_box)

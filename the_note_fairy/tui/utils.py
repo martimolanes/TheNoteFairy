@@ -9,7 +9,7 @@ def refresh_subwindow(subwin: curses.window):
     subwin_width = curses.COLS
     # move the subwindow to the correct position
     subwin.mvwin(6, 0)
-    subwin.resize(subwin_height, subwin_width)
+    #subwin.resize(subwin_height, subwin_width)
     subwin.border()
 
     subwin.addch(0, 0, TOP_LEFT_CHAR)

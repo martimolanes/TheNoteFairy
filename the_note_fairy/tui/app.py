@@ -117,7 +117,7 @@ def init_windows(stdscr: curses.window) -> Windows:
             )
 
     # Create a subwindow for displaying notes
-    subwin_height = SCREEN_HEIGHT - 10
+    subwin_height = SCREEN_HEIGHT - 9
     subwin_width = SCREEN_WIDTH
     subwin_y_offset = search_box_height + search_box_y_offset
     subwin: curses.window = create_subwindow(
