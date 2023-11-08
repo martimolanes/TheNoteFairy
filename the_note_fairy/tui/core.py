@@ -4,43 +4,44 @@ from tui.constants import *
 from tui.utils import refresh_searchbox, refresh_subwindow, refresh_keybinding_box
 import core.data as data
 import core.web as web
+from tui.windows import Windows
 
-def input_and_display(subwin: curses.window):
-    subwin.clear()
-    refresh_subwindow(subwin)
-    subject = _read_subject(subwin)
-    content = _read_content(subwin)
+def input_and_display(windows: Windows):
+    windows.subwin.clear()
+    refresh_subwindow(windows.subwin)
+    subject = _read_subject(windows)
+    content = _read_content(windows)
 
     return subject, content
 
-def _read_subject(subwin: curses.window) -> str:
-    subwin.addstr(DEFAULT_Y, DEFAULT_X, "Subject: ")
+def _read_subject(windows: Windows) -> str:
+    windows.subwin.addstr(DEFAULT_Y, DEFAULT_X, "Subject: ")
     x = DEFAULT_X + len("Subject: ")
-    refresh_subwindow(subwin)
+    refresh_subwindow(windows.subwin)
     subject = ""
     while True:
-        char = chr(subwin.getch())
+        char = chr(windows.subwin.getch())
         if char == '\n':
             break
         elif ord(char) == DELETE_KEY:
             if x > DEFAULT_X + len("Subject: "):
                 x -= 1
                 subject = subject[:-1]
-                subwin.addstr(DEFAULT_Y, x, ' ')
-                refresh_subwindow(subwin)
+                windows.subwin.addstr(DEFAULT_Y, x, ' ')
+                refresh_subwindow(windows.subwin)
             continue
         subject += char
         x += 1
-        subwin.addstr(DEFAULT_Y, DEFAULT_X + len("Subject: "), subject)
-        refresh_subwindow(subwin)
+        windows.subwin.addstr(DEFAULT_Y, DEFAULT_X + len("Subject: "), subject)
+        refresh_subwindow(windows.subwin)
     return subject
 
-def _read_content(subwin: curses.window) -> str:
+def _read_content(windows: Windows) -> str:
     x, y = DEFAULT_X, DEFAULT_Y * 2
     str_acc = ""
     new_line_pos_x = []
     while True:
-        char = chr(subwin.getch())
+        char = chr(windows.subwin.getch())
         if char == '\n':
             y += 1
             new_line_pos_x.append(x)
@@ -56,8 +57,8 @@ def _read_content(subwin: curses.window) -> str:
             if x > DEFAULT_X:
                 x -= 1
                 str_acc = str_acc[:-1]
-                subwin.addstr(y, x, ' ')
-                refresh_subwindow(subwin)
+                windows.subwin.addstr(y, x, ' ')
+                refresh_subwindow(windows.subwin)
             else:
                 if new_line_pos_x == []:
                     continue
@@ -68,27 +69,27 @@ def _read_content(subwin: curses.window) -> str:
                 else:
                     str_acc = str_acc[:-2]
                     x -= 1
-                subwin.addstr(y, x, ' ')
-                refresh_subwindow(subwin)
+                windows.subwin.addstr(y, x, ' ')
+                refresh_subwindow(windows.subwin)
             continue
         elif char == '+':
             break
         
-        subwin.addstr(y, x, char)
+        windows.subwin.addstr(y, x, char)
         x += 1
-        refresh_subwindow(subwin)
+        refresh_subwindow(windows.subwin)
         str_acc += char
         
     return str_acc
 
-def _read_search(search_box: curses.window) -> str:
+def _read_search(windows: Windows) -> str:
     x = 1 
-    refresh_searchbox(search_box)
-    search_box.addstr(1, x, ' >  ')
+    refresh_searchbox(windows.search_box)
+    windows.search_box.addstr(1, x, ' >  ')
     x += 4
     search_str = ""
     while True:
-        key = search_box.getch()
+        key = windows.search_box.getch()
         char = chr(key)
         if char == '\n':
             break
@@ -99,69 +100,69 @@ def _read_search(search_box: curses.window) -> str:
             if x > 5:
                 x -= 1
                 search_str = search_str[:-1]
-                search_box.addstr(1, x, ' ')
-                refresh_searchbox(search_box)
+                windows.search_box.addstr(1, x, ' ')
+                refresh_searchbox(windows.search_box)
             continue
         search_str += char
-        search_box.addstr(1, x, char)
+        windows.search_box.addstr(1, x, char)
         x += 1
-        refresh_searchbox(search_box)
+        refresh_searchbox(windows.search_box)
     return search_str
 
-def display_notes(subwin: curses.window, search_box: curses.window, keybinding_box: curses.window, notes: list):
+def display_notes(windows: Windows, notes: list):
     if len(notes) == 0:
-        subwin.clear()
-        refresh_subwindow(subwin)
-        subwin.addstr(DEFAULT_Y, DEFAULT_X, "No notes found")
+        windows.subwin.clear()
+        refresh_subwindow(windows.subwin)
+        windows.subwin.addstr(DEFAULT_Y, DEFAULT_X, "No notes found")
         return
     n = 0
-    subwin.clear()
-    refresh_subwindow(subwin)
-    _diplay_note(subwin, notes[n])
+    windows.subwin.clear()
+    refresh_subwindow(windows.subwin)
+    _diplay_note(windows.subwin, notes[n])
     while True:
-        keybinding_box.clear()
-        keybinding_box.addstr(0, 2, "Press ←/→ to navigate between notes (or h/l) , / to search, d to delete, q to quit")
-        refresh_keybinding_box(keybinding_box)
-        key = subwin.getch()
+        windows.keybinding_box.clear()
+        windows.keybinding_box.addstr(0, 2, "Press ←/→ to navigate between notes (or h/l) , / to search, d to delete, q to quit")
+        refresh_keybinding_box(windows.keybinding_box)
+        key = windows.subwin.getch()
         char = chr(key)
         if char == 'q':
             break
         elif char == 'h' or key == curses.KEY_LEFT:
-            subwin.clear()
-            refresh_subwindow(subwin)
+            windows.subwin.clear()
+            refresh_subwindow(windows.subwin)
             n = (n - 1) % len(notes)
-            _diplay_note(subwin, notes[n])
+            _diplay_note(windows.subwin, notes[n])
         elif char == 'l' or key == curses.KEY_RIGHT:
-            subwin.clear()
-            refresh_subwindow(subwin)
+            windows.subwin.clear()
+            refresh_subwindow(windows.subwin)
             n = (n + 1) % len(notes)
-            _diplay_note(subwin, notes[n])
+            _diplay_note(windows.subwin, notes[n])
         elif char == 'd':
             data.delete_note(notes[n]["id"])
-            subwin.clear()
-            refresh_subwindow(subwin)
-            subwin.addstr(DEFAULT_Y, DEFAULT_X, "Deleted")
+            windows.subwin.clear()
+            refresh_subwindow(windows.subwin)
+            windows.subwin.addstr(DEFAULT_Y, DEFAULT_X, "Deleted")
             break
         elif char == '/':
-            search_box.clear()
-            keybinding_box.clear()
-            keybinding_box.addstr(0, 2, "Search, press ESC to cancel, ENTER to search")
-            refresh_keybinding_box(keybinding_box)
-            search_str = _read_search(search_box)
+            windows.search_box.clear()
+            windows.keybinding_box.clear()
+            windows.keybinding_box.addstr(0, 2, "Search, press ESC to cancel, ENTER to search")
+            refresh_keybinding_box(windows.keybinding_box)
+            search_str = _read_search(windows)
             if search_str == "":
-                search_box.clear()
-                refresh_searchbox(search_box)
+                windows.search_box.clear()
+                refresh_searchbox(windows.search_box)
                 continue
             notes = data.search_notes(notes, search_str)
             if len(notes) == 0:
-                subwin.clear()
-                refresh_subwindow(subwin)
-                subwin.addstr(DEFAULT_Y, DEFAULT_X, "No notes found containing: " + search_str)
+                windows.subwin.clear()
+                refresh_subwindow(windows.subwin)
+                windows.subwin.addstr(DEFAULT_Y, DEFAULT_X, "No notes found containing: " + search_str)
                 break
-            subwin.clear()
-            refresh_subwindow(subwin)
+            windows.subwin.clear()
+            refresh_subwindow(windows.subwin)
             n = 0
-            _diplay_note(subwin, notes[n])
+            _diplay_note(windows.subwin, notes[n])
 
 
 def _diplay_note(subwin: curses.window, note: Dict[str, str]):

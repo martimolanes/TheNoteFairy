@@ -1,6 +1,7 @@
 import curses
 import _curses
 from tui.constants import TOP_LEFT_CHAR, TOP_RIGHT_CHAR, BOTTOM_LEFT_CHAR, BOTTOM_RIGHT_CHAR
+from tui.windows import Windows
 
 def refresh_subwindow(subwin: curses.window):
     SCREEN_HEIGHT = curses.LINES
@@ -50,3 +51,12 @@ def refresh_keybinding_box(keybinding_box: curses.window):
     keybinding_box.mvwin(curses.LINES - keybinding_box_height, 0)
     #FIX: keybinding_box.resize(keybinding_box_height, keybinding_box_width)
     keybinding_box.refresh()
+
+def update_term_size(windows: Windows):
+    y, x = windows.stdscr.getmaxyx()
+    windows.stdscr.clear()
+    curses.resizeterm(y, x)
+    refresh_searchbox(windows.search_box)
+    refresh_keybinding_box(windows.keybinding_box)
+    refresh_subwindow(windows.subwin)
+    windows.stdscr.refresh()

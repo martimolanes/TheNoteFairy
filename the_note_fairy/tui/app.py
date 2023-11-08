@@ -4,8 +4,9 @@ Display menu and get user input
 import curses
 from core import data
 from tui.constants import *
-from tui.utils import refresh_subwindow, refresh_searchbox, refresh_keybinding_box
+from tui.utils import refresh_subwindow, refresh_searchbox, refresh_keybinding_box, update_term_size
 from tui.core import input_and_display, display_notes
+from tui.windows import Windows
 
 def menu(stdscr: curses.window, username: str):
     '''
@@ -20,7 +21,7 @@ def menu(stdscr: curses.window, username: str):
     stdscr.clear()
 
     # Create subwindow, search box and keybinding box
-    subwin, search_box, keybinding_box = init_windows(stdscr)
+    windows: Windows = init_windows(stdscr)
 
     # Set colors
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLUE)
@@ -34,17 +35,11 @@ def menu(stdscr: curses.window, username: str):
 
     while True:
         if curses.is_term_resized(curses.LINES, curses.COLS):
-            y, x = stdscr.getmaxyx()
-            stdscr.clear()
-            curses.resizeterm(y, x)
-            refresh_searchbox(search_box)
-            refresh_keybinding_box(keybinding_box)
-            refresh_subwindow(subwin)
-            stdscr.refresh()
+            update_term_size(windows)
 
-        keybinding_box.clear()
-        keybinding_box.addstr(0, 2, "Press ↑/↓ to move (or j/k), ENTER to select")
-        refresh_keybinding_box(keybinding_box)
+        windows.keybinding_box.clear()
+        windows.keybinding_box.addstr(0, 2, "Press ↑/↓ to move (or j/k), ENTER to select")
+        refresh_keybinding_box(windows.keybinding_box)
 
         # Print options
         option_y = 0
@@ -69,7 +64,7 @@ def menu(stdscr: curses.window, username: str):
         elif key == ENTER_KEY:
             if current_option == LOGOUT_OPTION:
                 break
-            subwindow_run(subwin, search_box, keybinding_box, current_option, username)
+            subwindow_run(windows, current_option, username)
 
     # Clear screen and exit
     stdscr.clear()
@@ -77,21 +72,27 @@ def menu(stdscr: curses.window, username: str):
 
 
 def subwindow_run(
-        subwin: curses.window, search_box: curses.window,
-        keybinding_box: curses.window, option: int, username: str
+        windows: Windows, option: int, username: str
         ):
     if option == CREATE_OPTION:
-        keybinding_box.clear()
-        keybinding_box.addstr(0, 2, "Press ENTER to save subject, + to save the note")
-        refresh_keybinding_box(keybinding_box)
-        subject, content = input_and_display(subwin)
+        windows.keybinding_box.clear()
+        windows.keybinding_box.addstr(0, 2, "Press ENTER to save subject, + to save the note")
+        refresh_keybinding_box(windows.keybinding_box)
+        subject, content = input_and_display(windows)
         data.save_note(username, subject, content)
     elif option == RETRIEVE_OPTION:
         user_notes = data.retrieve_user_notes(username)
-        display_notes(subwin, search_box, keybinding_box, user_notes)
-    refresh_subwindow(subwin)
+        display_notes(windows, user_notes)
+    refresh_subwindow(windows.subwin)
 
-def init_windows(stdscr: curses.window):
+def init_windows(stdscr: curses.window) -> Windows:
+    '''
+    Create subwindow, search box and keybinding box
+    ## Parameters
+    stdscr: curses.window
+    ## Returns
+    SubWindows
+    '''
     # Default window size
     SCREEN_WIDTH = curses.COLS
     SCREEN_HEIGHT = curses.LINES
@@ -130,7 +131,10 @@ def init_windows(stdscr: curses.window):
     keybinding_box: curses.window = create_subwindow(
             stdscr, keybinding_box_height, keybinding_box_width, keybinding_box_y_offset, refresh_keybinding_box
             )
-    return subwin, search_box, keybinding_box
+
+    windows = Windows(stdscr, subwin, search_box, keybinding_box)
+
+    return windows
 
 
 def run(username: str):
