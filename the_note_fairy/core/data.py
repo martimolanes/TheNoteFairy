@@ -3,10 +3,41 @@ Functions for saving, retrieving and deleting notes from json file.
 '''
 import datetime
 import json
+import sqlite3
 import uuid
 from typing import List, Dict
 
 def save_note(username: str, subject: str, content: str) -> None:
+    '''
+    Save note to database
+    ## Parameters
+    username: str
+    subject: str
+    content: str
+    '''
+    save_note_sqlite(username, subject, content)
+    # save_note_json(username, subject, content)
+
+def save_note_sqlite(username: str, subject: str, content: str) -> None:
+    '''
+    Save note to database
+    ## Parameters
+    username: str
+    subject: str
+    content: str
+    '''
+    conn = sqlite3.connect('test.db')
+    c = conn.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS notes (id text, username text, subject text, content text, date text, www text)")
+
+    c.execute("INSERT INTO notes VALUES (?, ?, ?, ?, ?, ?)", (str(uuid.uuid4()), username, subject, content, datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"), 'https://www.google.com'))
+    conn.commit()
+
+    conn.close()
+
+
+
+def save_note_json(username: str, subject: str, content: str) -> None:
     '''
     Save note to database
     ## Parameters
@@ -31,14 +62,18 @@ def save_note(username: str, subject: str, content: str) -> None:
 def retrieve_user_notes(username: str) -> List[Dict[str, str]]:
     '''
     Retrieve notes from database
-    ## Parameters
-    username : str
-
     ## Returns
     List of notes
     '''
-    notes = _retrieve_all_notes()
-    return [note for note in notes if note["username"] == username]
+    conn = sqlite3.connect('test.db')
+    c = conn.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS notes (id text, username text, subject text, content text, date text, www text)")
+    c.execute("SELECT * FROM notes WHERE username=?", (username,))
+    notes = c.fetchall()
+    notes = [{'id': note[0], 'username': note[1], 'subject': note[2], 'content': note[3], 'date': note[4], 'www': note[5]} for note in notes]
+    conn.close()
+    return notes
+
 
 def delete_note(note_id: str) -> None:
     '''
@@ -46,10 +81,12 @@ def delete_note(note_id: str) -> None:
     ## Parameters
     date : str
     '''
-    notes = _retrieve_all_notes()
-    notes = [note for note in notes if note["id"] != note_id]
-    with open('notes.json', 'w') as f:
-        json.dump(notes, f)
+    conn = sqlite3.connect('test.db')
+    c = conn.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS notes (id text, username text, subject text, content text, date text, www text)")
+    c.execute("DELETE FROM notes WHERE id=?", (note_id,))
+    conn.commit()
+    conn.close()
 
 def search_notes(notes: List[Dict[str,str]], search_str: str) -> List[Dict[str, str]]:
     '''
@@ -65,7 +102,7 @@ def search_notes(notes: List[Dict[str,str]], search_str: str) -> List[Dict[str, 
         return [note for note in notes if search_str in note["date"]]
     return [note for note in notes if search_str in note["content"]]
 
-def _retrieve_all_notes() -> List[Dict[str, str]]:
+def _retrieve_all_notes_json() -> List[Dict[str, str]]:
     '''
     Retrieve notes from database
     ## Returns
