@@ -75,9 +75,6 @@ def subwindow_run(
         windows: Windows, option: int, username: str
         ):
     if option == CREATE_OPTION:
-        windows.keybinding_box.clear()
-        windows.keybinding_box.addstr(0, 2, "Press ENTER to save subject, + to save the note")
-        refresh_keybinding_box(windows.keybinding_box)
         subject, content = input_and_display(windows)
         data.save_note(username, subject, content)
     elif option == RETRIEVE_OPTION:

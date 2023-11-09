@@ -35,30 +35,6 @@ def save_note_sqlite(username: str, subject: str, content: str) -> None:
 
     conn.close()
 
-
-
-def save_note_json(username: str, subject: str, content: str) -> None:
-    '''
-    Save note to database
-    ## Parameters
-    username: str
-    subject: str
-    content: str
-    '''
-    note: Dict[str, str] = {
-            'id': str(uuid.uuid4()),
-            'username': username,
-            'subject': subject,
-            'content': content,
-            'date': datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
-            'www': 'https://www.google.com'
-            }
-
-    notes = _retrieve_all_notes()
-    notes.append(note)
-    with open('notes.json', 'w') as f:
-        json.dump(notes, f)
-
 def retrieve_user_notes(username: str) -> List[Dict[str, str]]:
     '''
     Retrieve notes from database

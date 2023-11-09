@@ -7,6 +7,9 @@ import core.web as web
 from tui.windows import Windows
 
 def input_and_display(windows: Windows):
+    windows.keybinding_box.clear()
+    windows.keybinding_box.addstr(0, 2, "Press ENTER to save subject, + to save the note")
+    refresh_keybinding_box(windows.keybinding_box)
     windows.subwin.clear()
     refresh_subwindow(windows.subwin)
     subject = _read_subject(windows)
