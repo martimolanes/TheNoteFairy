@@ -18,7 +18,12 @@ def save_note(username: str, subject: str, content: str) -> None:
     save_note_sqlite(username, subject, content)
     # save_note_json(username, subject, content)
 
-def save_note_sqlite(username: str, subject: str, content: str) -> None:
+def save_note_sqlite(
+        username: str, subject: str, content: str,
+        id=str(uuid.uuid4()),
+        date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+        www="https://www.google.com"
+                     ) -> None:
     '''
     Save note to database
     ## Parameters
@@ -30,7 +35,7 @@ def save_note_sqlite(username: str, subject: str, content: str) -> None:
     c = conn.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS notes (id text, username text, subject text, content text, date text, www text)")
 
-    c.execute("INSERT INTO notes VALUES (?, ?, ?, ?, ?, ?)", (str(uuid.uuid4()), username, subject, content, datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"), 'https://www.google.com'))
+    c.execute("INSERT INTO notes VALUES (?, ?, ?, ?, ?, ?)", (id, username, subject, content, date, www))
     conn.commit()
 
     conn.close()
