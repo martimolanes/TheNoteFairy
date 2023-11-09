@@ -83,17 +83,24 @@ def search_notes(notes: List[Dict[str,str]], search_str: str) -> List[Dict[str, 
         return [note for note in notes if search_str in note["date"]]
     return [note for note in notes if search_str in note["content"]]
 
-def _retrieve_all_notes_json() -> List[Dict[str, str]]:
+def import_json() -> None:
     '''
-    Retrieve notes from database
-    ## Returns
-    List of notes
+    Import notes from json file
     '''
     try:
         with open('notes.json', 'r') as f:
-            notes: List[Dict[str,str]] = json.load(f)
+            data: List[Dict[str,str]] = json.load(f)
     except FileNotFoundError:
-        return []
-    return notes
+        data = []
 
-
+    conn = sqlite3.connect('test.db')
+    c = conn.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS notes (id text, username text, subject text, content text, date text, www text)")
+    c.execute("SELECT id FROM notes")
+    ids = c.fetchall()
+    ids = [id[0] for id in ids]
+    for note in data:
+        if note["id"] not in ids:
+            c.execute("INSERT INTO notes VALUES (?, ?, ?, ?, ?, ?)", (note["id"], note["username"], note["subject"], note["content"], note["date"], note["www"]))
+    conn.commit()
+    conn.close()
