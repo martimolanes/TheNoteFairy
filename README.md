@@ -33,6 +33,12 @@ python the_note_fairy/the_note_fairy.py
 ![retrieving](./assets/retrieve_note.png)
 > retrieving a note
 
+![workflow](./assets/workflow.png)
+> Normal workflow with tmux and vim
+
+![VSCode](./assets/VScode-preview.png)
+> Opening TheNoteFairy with VSCode terminal
+
 ## KNOWN PROBLEMS
 - application doesn't FULLY support resizing the terminal
 - application MAY crash with small terminal size -> recommended big-size window
