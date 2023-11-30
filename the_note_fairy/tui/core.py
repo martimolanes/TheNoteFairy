@@ -15,7 +15,7 @@ def input_and_display(windows: Windows):
     subject = _read_subject(windows)
     content, www = _read_content(windows)
 
-    return subject, content
+    return subject, content, www
 
 def _read_subject(windows: Windows) -> str:
     windows.subwin.addstr(DEFAULT_Y, DEFAULT_X, "Subject: ")

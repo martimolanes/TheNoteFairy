@@ -7,7 +7,7 @@ import sqlite3
 import uuid
 from typing import List, Dict
 
-def save_note(username: str, subject: str, content: str) -> None:
+def save_note(username: str, subject: str, content: str, www: str) -> None:
     '''
     Save note to database
     ## Parameters
@@ -15,14 +15,16 @@ def save_note(username: str, subject: str, content: str) -> None:
     subject: str
     content: str
     '''
-    save_note_sqlite(username, subject, content)
+    if www == "":
+        www = "https://www.github.com"
+    save_note_sqlite(username, subject, content, www=www)
     # save_note_json(username, subject, content)
 
 def save_note_sqlite(
         username: str, subject: str, content: str,
         id=str(uuid.uuid4()),
         date=datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
-        www="https://www.google.com"
+        www="https://www.github.com"
                      ) -> None:
     '''
     Save note to database

@@ -75,8 +75,8 @@ def subwindow_run(
         windows: Windows, option: int, username: str
         ):
     if option == CREATE_OPTION:
-        subject, content = input_and_display(windows)
-        data.save_note(username, subject, content)
+        subject, content, www = input_and_display(windows)
+        data.save_note(username, subject, content, www)
     elif option == RETRIEVE_OPTION:
         data.import_json()
         user_notes = data.retrieve_user_notes(username)
