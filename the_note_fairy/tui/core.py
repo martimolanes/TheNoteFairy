@@ -13,7 +13,7 @@ def input_and_display(windows: Windows):
     windows.subwin.clear()
     refresh_subwindow(windows.subwin)
     subject = _read_subject(windows)
-    content = _read_content(windows)
+    content, www = _read_content(windows)
 
     return subject, content
 
@@ -41,7 +41,7 @@ def _read_subject(windows: Windows) -> str:
         refresh_subwindow(windows.subwin)
     return subject
 
-def _read_content(windows: Windows) -> str:
+def _read_content(windows: Windows):
     x, y = DEFAULT_X, DEFAULT_Y * 2
     str_acc = ""
     new_line_pos_x = []
@@ -86,8 +86,36 @@ def _read_content(windows: Windows) -> str:
         x += 1
         refresh_subwindow(windows.subwin)
         str_acc += char
+
+    www = read_www(windows, y)
         
-    return str_acc
+    return str_acc, www
+
+def read_www(windows: Windows, y: int):
+    www_help = "www: "
+    windows.subwin.addstr( y + DEFAULT_Y, DEFAULT_X, www_help)
+    x = DEFAULT_X + len("Subject: ")
+    refresh_subwindow(windows.subwin)
+    www = ""
+    while True:
+        if curses.is_term_resized(curses.LINES, curses.COLS):
+            update_term_size(windows)
+        char = chr(windows.subwin.getch())
+        if char == '\n':
+            break
+        elif ord(char) == DELETE_KEY:
+            if x > DEFAULT_X + len(www_help):
+                x -= 1
+                www = www[:-1]
+                windows.subwin.addstr(y + DEFAULT_Y, x, ' ')
+                refresh_subwindow(windows.subwin)
+            continue
+        www += char
+        x += 1
+        windows.subwin.addstr(y + DEFAULT_Y, DEFAULT_X + len(www_help), www)
+        refresh_subwindow(windows.subwin)
+    return www
+
 
 def _read_search(windows: Windows) -> str:
     x = 1 
