@@ -132,18 +132,18 @@ def display_notes(windows: Windows, notes: list):
         if curses.is_term_resized(curses.LINES, curses.COLS):
             update_term_size(windows)
         windows.keybinding_box.clear()
-        windows.keybinding_box.addstr(0, 2, "Press ←/→ to navigate between notes (or h/l) , / to search, d to delete, q to quit")
+        windows.keybinding_box.addstr(0, 2, "Press h/l to navigate between notes, / to search, d to delete, q to quit")
         refresh_keybinding_box(windows.keybinding_box)
         key = windows.subwin.getch()
         char = chr(key)
         if char == 'q':
             break
-        elif char == 'h' or key == curses.KEY_LEFT:
+        elif char == 'h':
             windows.subwin.clear()
             refresh_subwindow(windows.subwin)
             n = (n - 1) % len(notes)
             _diplay_note(windows.subwin, notes[n])
-        elif char == 'l' or key == curses.KEY_RIGHT:
+        elif char == 'l':
             windows.subwin.clear()
             refresh_subwindow(windows.subwin)
             n = (n + 1) % len(notes)
