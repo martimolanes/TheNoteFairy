@@ -6,19 +6,19 @@ Inspired by one python assignment of my course in Finland (XAMK)
 
 ## INSTALLATION
 - Clone the repository
-'''
+```bash
 git clone git@github.com:martimolanes/TheNoteFairy.git
-'''
+```
 
 - Install the requirements
-'''
+```bash
 pip install -r requirements.txt
-'''
+```
 
 - Run the application
-'''
+```bash
 python the_note_fairy/the_note_fairy.py
-'''
+```
 
 ## CAPABILITIES
 - Create, Retrieve and Delete notes with different isolated users.
