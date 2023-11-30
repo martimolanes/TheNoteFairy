@@ -2,6 +2,8 @@
 
 A multi-user TUI(text/terminal user interface) to take notes/snippets with vim-like keybindings from scratch using [curses](https://docs.python.org/3/library/curses.html#module-curses).
 
+Inspired by one python assignment of my course in Finland (XAMK)
+
 ## INSTALLATION
 - Clone the repository
 '''
