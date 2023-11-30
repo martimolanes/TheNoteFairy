@@ -147,6 +147,7 @@ def _read_search(windows: Windows) -> str:
     return search_str
 
 def display_notes(windows: Windows, notes: list):
+    notes_cache = []
     if len(notes) == 0:
         windows.subwin.clear()
         refresh_subwindow(windows.subwin)
@@ -183,6 +184,8 @@ def display_notes(windows: Windows, notes: list):
             windows.subwin.addstr(DEFAULT_Y, DEFAULT_X, "Deleted")
             break
         elif char == '/':
+            if notes_cache != []:
+                notes = notes_cache
             windows.search_box.clear()
             windows.keybinding_box.clear()
             windows.keybinding_box.addstr(0, 2, "Search, press ESC to cancel, ENTER to search")
@@ -192,6 +195,7 @@ def display_notes(windows: Windows, notes: list):
                 windows.search_box.clear()
                 refresh_searchbox(windows.search_box)
                 continue
+            notes_cache = notes
             notes = data.search_notes(notes, search_str)
             if len(notes) == 0:
                 windows.subwin.clear()

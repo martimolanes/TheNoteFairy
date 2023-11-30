@@ -14,11 +14,11 @@ def save_note(username: str, subject: str, content: str, www: str) -> None:
     username: str
     subject: str
     content: str
+    www: str
     '''
     if www == "":
         www = "https://www.github.com"
     save_note_sqlite(username, subject, content, www=www)
-    # save_note_json(username, subject, content)
 
 def save_note_sqlite(
         username: str, subject: str, content: str,
@@ -32,6 +32,10 @@ def save_note_sqlite(
     username: str
     subject: str
     content: str
+    ...
+    id: str
+    date: str
+    www: str
     '''
     conn = sqlite3.connect('test.db')
     c = conn.cursor()
@@ -45,6 +49,8 @@ def save_note_sqlite(
 def retrieve_user_notes(username: str) -> List[Dict[str, str]]:
     '''
     Retrieve notes from database
+    ## Parameters
+    username : str
     ## Returns
     List of notes
     '''
@@ -62,7 +68,7 @@ def delete_note(note_id: str) -> None:
     '''
     Delete note from database
     ## Parameters
-    date : str
+    note_id : str
     '''
     conn = sqlite3.connect('test.db')
     c = conn.cursor()
@@ -83,7 +89,7 @@ def search_notes(notes: List[Dict[str,str]], search_str: str) -> List[Dict[str, 
     '''
     if search_str[0].isdigit():
         return [note for note in notes if search_str in note["date"]]
-    return [note for note in notes if search_str in note["content"]]
+    return [note for note in notes if search_str in note["content"] or search_str in note["subject"]]
 
 def import_json() -> None:
     '''
