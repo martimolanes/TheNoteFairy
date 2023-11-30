@@ -1,9 +1,8 @@
 main
-- [x] search function (grep, date search)
-- [x] network link in note
-- [x] read notes from files
-- [x] fetch html from web
-- [x] acounts and passwords in database 
+- [ ] 
 next
-- [x] keybinds help
+- [ ] open link in new tab
+- [ ] clipboard integration 
 - [ ] log box wth details (username, nº notes)
+- [ ] full resizable term
+
