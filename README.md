@@ -26,9 +26,6 @@ python the_note_fairy/the_note_fairy.py
 - Users passwords are encrypted.
 
 ---
-![main_menu](./assets/main_menu.png)
-> main menu displayed in alacritty terminal
-
 
 ![retrieving](./assets/retrieve_note.png)
 > retrieving a note
