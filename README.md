@@ -23,6 +23,7 @@ python the_note_fairy/the_note_fairy.py
 ## CAPABILITIES
 - Create, Retrieve and Delete notes with different isolated users.
 - Search notes for date, subject or content.
+- Import notes from json with `notes.json` in the source folder. (Ex: see `notes2.json` in the source folder and change name and access user admin)
 - Fetch the title of the webpage stored.
 - All notes and users are stored in a sqlite3 database.
 - Users passwords are encrypted.
